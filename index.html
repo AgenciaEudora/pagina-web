@@ -1,0 +1,1878 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eudora — Agencia para el Sector Creativo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,200;0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+
+/* ════════════════════════════════════════════
+   TOKENS & RESET
+════════════════════════════════════════════ */
+:root {
+  --orange:      #FF5B04;
+  --orange-hot:  #FC8B50;
+  --orange-deep: #B33106;
+  --petrol:      #153B5C;
+  --petrol-deep: #0A1F33;
+  --black:       #0B0B0C;
+  --ink:         #111113;
+  --paper:       #FFFFFF;
+  --g400: #9BA5AB; --g500: #6A757C;
+
+  --display: 'Bebas Neue', Impact, sans-serif;
+  --serif:   'Cormorant Garamond', Georgia, serif;
+  --body:    'DM Sans', system-ui, sans-serif;
+
+  --glow:   0 0 40px rgba(255,91,4,.4);
+  --shadow: 0 24px 64px rgba(0,0,0,.5);
+  --r: 10px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--body);
+  background: var(--ink);
+  color: var(--paper);
+  overflow-x: hidden;
+  cursor: none;
+}
+img   { display: block; max-width: 100%; }
+a     { color: inherit; text-decoration: none; }
+video { display: block; }
+
+/* ════════════════════════════════════════════
+   CURSOR
+════════════════════════════════════════════ */
+#cur {
+  position: fixed;
+  width: 10px; height: 10px;
+  background: var(--orange);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: width .25s, height .25s, opacity .25s;
+}
+#cur.big { width: 36px; height: 36px; opacity: .6; }
+#curR {
+  position: fixed;
+  width: 38px; height: 38px;
+  border: 1.5px solid rgba(255,91,4,.4);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%,-50%);
+}
+
+/* ════════════════════════════════════════════
+   REVEAL ANIMATIONS
+════════════════════════════════════════════ */
+.rv  { opacity: 0; transform: translateY(30px); transition: opacity .85s cubic-bezier(.22,1,.36,1), transform .85s cubic-bezier(.22,1,.36,1); }
+.rvL { opacity: 0; transform: translateX(-36px); transition: opacity .85s cubic-bezier(.22,1,.36,1), transform .85s cubic-bezier(.22,1,.36,1); }
+.rvR { opacity: 0; transform: translateX(36px);  transition: opacity .85s cubic-bezier(.22,1,.36,1), transform .85s cubic-bezier(.22,1,.36,1); }
+.rv.on, .rvL.on, .rvR.on { opacity: 1; transform: translate(0); }
+.d1 { transition-delay: .1s !important; }
+.d2 { transition-delay: .2s !important; }
+.d3 { transition-delay: .3s !important; }
+.d4 { transition-delay: .4s !important; }
+.d5 { transition-delay: .5s !important; }
+
+/* ════════════════════════════════════════════
+   NAV
+════════════════════════════════════════════ */
+#nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 200;
+  padding: 22px 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background .4s, backdrop-filter .4s, border-color .4s;
+  border-bottom: 1px solid transparent;
+}
+#nav.solid {
+  background: rgba(11,11,12,.88);
+  backdrop-filter: blur(24px) saturate(160%);
+  border-color: rgba(255,255,255,.07);
+}
+.nav-logo {
+  font-family: var(--display);
+  font-size: 24px;
+  letter-spacing: .14em;
+}
+.nav-logo b { color: var(--orange); font-weight: 400; }
+.nav-links {
+  display: flex;
+  gap: 36px;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.6);
+  transition: color .2s;
+}
+.nav-links a:hover { color: var(--paper); }
+.nav-cta {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--paper);
+  background: var(--orange);
+  padding: 10px 26px;
+  border-radius: 3px;
+  transition: background .2s, transform .2s;
+}
+.nav-cta:hover { background: var(--orange-deep); transform: translateY(-1px); }
+
+/* ════════════════════════════════════════════
+   HERO
+════════════════════════════════════════════ */
+.hero {
+  position: relative;
+  height: 100vh;
+  min-height: 680px;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background: url('tarquinia/Tarquinia%20-%20Matta-1%20-%20copia%20-%20copia.jpg') center/cover no-repeat;
+  transform: scale(1.08);
+  filter: brightness(.28) saturate(.9);
+  transition: transform 7s ease-out, filter 2s;
+  will-change: transform;
+}
+.hero-bg.z { transform: scale(1); filter: brightness(.32) saturate(.9); }
+.hero-grad {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to right,  rgba(11,11,12,.75) 0%, transparent 70%),
+    linear-gradient(to top,    rgba(11,11,12,.9)  0%, transparent 55%),
+    linear-gradient(135deg,    rgba(21,59,92,.18) 0%, transparent 60%);
+}
+.hero-grain {
+  position: absolute;
+  inset: 0;
+  opacity: .045;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 256px;
+  pointer-events: none;
+}
+.hero-content {
+  position: relative;
+  z-index: 2;
+  padding: 0 52px 80px;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+}
+.hero-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .32em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 22px;
+  opacity: 0;
+  animation: fadeUp .9s .4s forwards;
+}
+.hero-h1 {
+  font-family: var(--display);
+  font-size: clamp(68px, 9.5vw, 138px);
+  line-height: .88;
+  letter-spacing: .015em;
+  margin-bottom: 28px;
+  opacity: 0;
+  animation: fadeUp .9s .6s forwards;
+}
+.hero-h1 .ac { color: var(--orange); }
+.hero-lead {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(18px, 2.2vw, 26px);
+  font-weight: 300;
+  color: rgba(255,255,255,.78);
+  max-width: 540px;
+  line-height: 1.55;
+  margin-bottom: 48px;
+  opacity: 0;
+  animation: fadeUp .9s .8s forwards;
+}
+.hero-btns {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  opacity: 0;
+  animation: fadeUp .9s 1s forwards;
+}
+.btn-p {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  background: var(--orange);
+  color: var(--paper);
+  padding: 15px 38px;
+  border-radius: 3px;
+  transition: background .25s, transform .25s, box-shadow .25s;
+}
+.btn-p:hover { background: var(--orange-deep); transform: translateY(-2px); box-shadow: var(--glow); }
+.btn-g {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.65);
+  border: 1px solid rgba(255,255,255,.2);
+  padding: 14px 30px;
+  border-radius: 3px;
+  transition: color .25s, border-color .25s, transform .25s;
+}
+.btn-g:hover { color: var(--paper); border-color: rgba(255,255,255,.5); transform: translateY(-2px); }
+.hero-scroll {
+  position: absolute;
+  right: 52px;
+  bottom: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+  animation: fadeIn 1s 1.6s forwards;
+}
+.hero-scroll span {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.3);
+  writing-mode: vertical-rl;
+}
+.scroll-bar {
+  width: 1px;
+  height: 56px;
+  background: linear-gradient(to bottom, rgba(255,91,4,.9), transparent);
+  animation: pulse 2.2s infinite;
+}
+
+/* ════════════════════════════════════════════
+   HELPERS
+════════════════════════════════════════════ */
+.wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 52px;
+}
+.sec-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .32em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 14px;
+}
+.sec-title {
+  font-family: var(--display);
+  font-size: clamp(40px, 5vw, 72px);
+  line-height: 1;
+  letter-spacing: .02em;
+}
+.sec-title .ac { color: var(--orange); }
+.divider {
+  width: 40px;
+  height: 3px;
+  background: var(--orange);
+  margin: 24px 0;
+}
+
+/* ════════════════════════════════════════════
+   MANIFESTO
+════════════════════════════════════════════ */
+.manifesto {
+  background: var(--black);
+  padding: 72px 0 80px;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+.manifesto::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, var(--orange) 50%, transparent 100%);
+}
+.manifesto-ghost {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  font-family: var(--display);
+  font-size: clamp(90px, 16vw, 240px);
+  color: rgba(255,255,255,.018);
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: .08em;
+}
+.manifesto-inner {
+  position: relative;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 52px;
+}
+.manifesto-kicker {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 13px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: rgba(255,91,4,.8);
+  margin-bottom: 44px;
+}
+.manifesto-body {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(17px, 2vw, 26px);
+  font-weight: 300;
+  line-height: 1.65;
+  color: rgba(255,255,255,.88);
+  margin-bottom: 36px;
+}
+.manifesto-body strong {
+  font-weight: 600;
+  font-style: normal;
+  color: var(--paper);
+}
+.manifesto-body .hi {
+  font-style: normal;
+  font-weight: 600;
+  color: var(--orange);
+}
+.manifesto-coda {
+  font-family: var(--body);
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.9;
+  color: rgba(255,255,255,.42);
+  max-width: 580px;
+  margin: 0 auto;
+}
+.manifesto-coda em { color: rgba(255,255,255,.7); font-style: normal; }
+
+/* ════════════════════════════════════════════
+   SERVICES
+════════════════════════════════════════════ */
+.services {
+  padding: 120px 0;
+  background: var(--ink);
+}
+.services-head { margin-bottom: 72px; }
+.svc-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+}
+.svc-card {
+  position: relative;
+  padding: 40px 32px 36px;
+  background: rgba(255,255,255,.025);
+  border: 1px solid rgba(255,255,255,.06);
+  overflow: hidden;
+  transition: background .35s, border-color .35s, transform .35s;
+}
+.svc-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--orange);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .4s cubic-bezier(.22,1,.36,1);
+}
+.svc-card:hover { background: rgba(255,91,4,.05); border-color: rgba(255,91,4,.18); transform: translateY(-5px); }
+.svc-card:hover::after { transform: scaleX(1); }
+.svc-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--orange);
+  letter-spacing: .18em;
+  margin-bottom: 28px;
+  opacity: .55;
+}
+.svc-ico {
+  width: 44px; height: 44px;
+  margin-bottom: 24px;
+  color: var(--orange);
+  stroke-width: 1.4;
+}
+.svc-name {
+  font-family: var(--display);
+  font-size: 27px;
+  letter-spacing: .04em;
+  line-height: 1;
+  margin-bottom: 14px;
+}
+.svc-desc {
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.75;
+  color: rgba(255,255,255,.48);
+}
+.svc-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 24px;
+}
+.tag {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 5px 11px;
+  border-radius: 2px;
+  background: rgba(255,255,255,.05);
+  color: rgba(255,255,255,.4);
+  border: 1px solid rgba(255,255,255,.07);
+}
+
+/* ════════════════════════════════════════════
+   CASES
+════════════════════════════════════════════ */
+.cases {
+  padding: 120px 0 0;
+  background: var(--black);
+}
+.cases-head { margin-bottom: 64px; }
+.cases-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr 1fr;
+  grid-template-rows: 360px 300px;
+  gap: 3px;
+}
+.case-item {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.case-item:nth-child(1) { grid-row: span 2; }
+.case-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .65s cubic-bezier(.22,1,.36,1), filter .65s;
+  filter: brightness(.55) saturate(.75);
+}
+.case-item:hover .case-img {
+  transform: scale(1.06);
+  filter: brightness(.35) saturate(.5);
+}
+.case-ov {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(11,11,12,.92) 0%, rgba(11,11,12,.1) 55%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 30px 28px;
+}
+.case-sector {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 6px;
+  transform: translateY(6px);
+  transition: transform .3s;
+}
+.case-item:hover .case-sector { transform: translateY(0); }
+.case-name {
+  font-family: var(--display);
+  font-size: clamp(22px, 2.8vw, 40px);
+  letter-spacing: .03em;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+.case-blurb {
+  font-size: 13px;
+  font-weight: 300;
+  color: rgba(255,255,255,.6);
+  line-height: 1.6;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .45s cubic-bezier(.22,1,.36,1), opacity .4s;
+  opacity: 0;
+}
+.case-item:hover .case-blurb { max-height: 72px; opacity: 1; }
+.case-arrow {
+  position: absolute;
+  top: 22px; right: 22px;
+  width: 36px; height: 36px;
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  transform: scale(0) rotate(-45deg);
+  transition: transform .3s cubic-bezier(.22,1,.36,1);
+}
+.case-item:hover .case-arrow { transform: scale(1) rotate(0deg); }
+
+/* ════════════════════════════════════════════
+   MARQUEE
+════════════════════════════════════════════ */
+.marquee-sec {
+  padding: 72px 0;
+  background: var(--black);
+  overflow: hidden;
+  border-top: 1px solid rgba(255,255,255,.04);
+}
+.marquee-label {
+  text-align: center;
+  margin-bottom: 44px;
+}
+.mq-wrap {
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
+}
+.mq-track {
+  display: flex;
+  gap: 14px;
+  animation: marquee 32s linear infinite;
+  width: max-content;
+}
+.mq-img {
+  width: 260px;
+  height: 188px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+  transition: transform .4s, filter .4s;
+  filter: brightness(.65) saturate(.7);
+}
+.mq-img:hover { transform: scale(1.04); filter: brightness(1) saturate(1); }
+.mq-track:hover { animation-play-state: paused; }
+
+/* ════════════════════════════════════════════
+   NUMBERS
+════════════════════════════════════════════ */
+.numbers-sec {
+  padding: 100px 0;
+  background: var(--ink);
+  position: relative;
+  overflow: hidden;
+}
+.numbers-sec::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 55% at 50% 110%, rgba(255,91,4,.07) 0%, transparent 70%);
+}
+.num-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  position: relative;
+}
+.num-item {
+  padding: 56px 36px;
+  text-align: center;
+  border-left: 1px solid rgba(255,255,255,.06);
+  transition: background .3s;
+}
+.num-item:first-child { border-left: none; }
+.num-item:hover { background: rgba(255,91,4,.04); }
+.num-big {
+  font-family: var(--display);
+  font-size: clamp(52px, 6.5vw, 90px);
+  letter-spacing: .02em;
+  color: var(--orange);
+  line-height: 1;
+  margin-bottom: 10px;
+}
+.num-label {
+  font-size: 13px;
+  font-weight: 300;
+  color: rgba(255,255,255,.45);
+  line-height: 1.6;
+}
+
+/* ════════════════════════════════════════════
+   HUMAN / WHY US
+════════════════════════════════════════════ */
+.human-sec {
+  padding: 120px 0;
+  background: var(--black);
+}
+.human-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+.img-stack {
+  position: relative;
+  height: 540px;
+}
+.img-main {
+  position: absolute;
+  top: 0; left: 0;
+  width: 70%; height: 78%;
+  object-fit: cover;
+  border-radius: var(--r);
+  box-shadow: var(--shadow);
+  z-index: 2;
+}
+.img-sec {
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 55%; height: 60%;
+  object-fit: cover;
+  border-radius: var(--r);
+  border: 4px solid var(--black);
+  box-shadow: var(--shadow);
+  z-index: 3;
+}
+.img-badge {
+  position: absolute;
+  top: 28%; right: 18%;
+  z-index: 4;
+  background: var(--orange);
+  color: var(--paper);
+  padding: 18px 22px;
+  border-radius: var(--r);
+  text-align: center;
+  box-shadow: 0 12px 36px rgba(255,91,4,.5);
+}
+.badge-num {
+  font-family: var(--display);
+  font-size: 38px;
+  letter-spacing: .04em;
+  line-height: 1;
+}
+.badge-txt {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  opacity: .85;
+  margin-top: 2px;
+}
+.human-copy {}
+.human-title {
+  font-family: var(--display);
+  font-size: clamp(34px, 3.8vw, 58px);
+  line-height: 1.05;
+  letter-spacing: .02em;
+  margin: 14px 0 26px;
+}
+.human-title .ac { color: var(--orange); }
+.human-body {
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.88;
+  color: rgba(255,255,255,.58);
+  margin-bottom: 36px;
+}
+.val-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 40px;
+}
+.val-item {
+  padding: 18px 20px;
+  background: rgba(255,255,255,.025);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: var(--r);
+  transition: border-color .25s, background .25s;
+}
+.val-item:hover {
+  border-color: rgba(255,91,4,.28);
+  background: rgba(255,91,4,.04);
+}
+.val-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 6px;
+}
+.val-desc {
+  font-size: 12px;
+  font-weight: 300;
+  color: rgba(255,255,255,.45);
+  line-height: 1.65;
+}
+
+/* ════════════════════════════════════════════
+   TEAM SECTION
+════════════════════════════════════════════ */
+.team-sec {
+  padding: 120px 0 0;
+  background: var(--ink);
+}
+.team-head { margin-bottom: 52px; }
+.team-photo-wrap {
+  position: relative;
+  overflow: hidden;
+  max-height: 600px;
+  line-height: 0;
+}
+.team-photo {
+  width: 100%;
+  max-height: 600px;
+  object-fit: cover;
+  object-position: center 18%;
+  display: block;
+  filter: brightness(.8);
+  transition: filter .5s;
+}
+.team-photo-wrap:hover .team-photo { filter: brightness(.88); }
+.team-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top,
+    rgba(11,11,12,.72) 0%,
+    rgba(11,11,12,.08) 45%,
+    transparent 65%);
+  pointer-events: none;
+}
+.team-labels {
+  position: absolute;
+  inset: 0;
+}
+.t-member {
+  position: absolute;
+  bottom: 36px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+.t-line {
+  width: 1px;
+  height: 90px;
+  background: linear-gradient(to bottom, transparent 0%, rgba(255,91,4,.7) 100%);
+  flex-shrink: 0;
+}
+.t-tag {
+  background: rgba(11,11,12,.84);
+  backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(255,255,255,.13);
+  padding: 11px 20px 9px;
+  border-radius: 8px;
+  text-align: center;
+  min-width: 108px;
+  transition: border-color .25s;
+}
+.t-member:hover .t-tag { border-color: rgba(255,91,4,.45); }
+.t-name {
+  display: block;
+  font-family: var(--display);
+  font-size: 22px;
+  letter-spacing: .08em;
+  color: var(--paper);
+  line-height: 1;
+}
+.t-role {
+  display: block;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-top: 5px;
+}
+
+/* ════════════════════════════════════════════
+   TESTIMONIAL / QUOTE BREAK
+════════════════════════════════════════════ */
+.quote-break {
+  padding: 100px 0;
+  background: var(--petrol-deep);
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+.quote-break::before {
+  content: '"';
+  position: absolute;
+  top: -20px; left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--serif);
+  font-size: 400px;
+  color: rgba(255,255,255,.025);
+  line-height: 1;
+  pointer-events: none;
+}
+.quote-inner {
+  position: relative;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 52px;
+}
+.quote-text {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(20px, 2.8vw, 34px);
+  font-weight: 300;
+  line-height: 1.65;
+  color: rgba(255,255,255,.85);
+  margin-bottom: 36px;
+}
+.quote-text span { color: var(--orange-hot); font-style: normal; font-weight: 600; }
+.quote-author {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.35);
+}
+.quote-author b { color: var(--orange); font-weight: 700; }
+
+/* ════════════════════════════════════════════
+   CTA
+════════════════════════════════════════════ */
+.cta-sec {
+  padding: 160px 0;
+  background: var(--ink);
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+.cta-sec::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 65% 55% at 50% 50%, rgba(255,91,4,.1) 0%, transparent 70%);
+}
+.cta-sec::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--orange), transparent);
+}
+.cta-ghost {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  font-family: var(--display);
+  font-size: clamp(80px, 18vw, 260px);
+  color: rgba(255,255,255,.022);
+  white-space: nowrap;
+  pointer-events: none;
+  letter-spacing: .1em;
+}
+.cta-inner {
+  position: relative;
+  z-index: 2;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 52px;
+}
+.cta-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.35);
+  margin-bottom: 24px;
+}
+.cta-h2 {
+  font-family: var(--display);
+  font-size: clamp(48px, 7vw, 96px);
+  line-height: .9;
+  letter-spacing: .02em;
+  margin-bottom: 28px;
+}
+.cta-h2 .ac { color: var(--orange); }
+.cta-sub {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(15px, 1.8vw, 20px);
+  font-weight: 300;
+  color: rgba(255,255,255,.55);
+  line-height: 1.65;
+  margin-bottom: 52px;
+}
+.cta-mail {
+  display: block;
+  font-family: var(--display);
+  font-size: clamp(18px, 3vw, 36px);
+  letter-spacing: .08em;
+  color: var(--orange);
+  margin-top: 44px;
+  opacity: .8;
+  transition: opacity .2s;
+}
+.cta-mail:hover { opacity: 1; }
+
+/* ════════════════════════════════════════════
+   FOOTER
+════════════════════════════════════════════ */
+footer {
+  background: var(--black);
+  padding: 56px 0 32px;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 44px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.footer-logo {
+  font-family: var(--display);
+  font-size: 32px;
+  letter-spacing: .14em;
+}
+.footer-logo b { color: var(--orange); font-weight: 400; }
+.footer-nav {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+}
+.footer-nav a {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.38);
+  transition: color .2s;
+}
+.footer-nav a:hover { color: var(--orange); }
+.footer-social {
+  display: flex;
+  gap: 12px;
+}
+.soc {
+  width: 34px; height: 34px;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,.45);
+  transition: border-color .2s, color .2s, transform .2s;
+}
+.soc:hover { border-color: var(--orange); color: var(--orange); transform: translateY(-3px); }
+.footer-btm {
+  border-top: 1px solid rgba(255,255,255,.05);
+  padding-top: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.footer-copy { font-size: 11px; color: rgba(255,255,255,.22); }
+.footer-tagline {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 13px;
+  color: rgba(255,255,255,.28);
+}
+.footer-tagline span { color: var(--orange); opacity: .75; }
+
+/* ════════════════════════════════════════════
+   KEYFRAMES
+════════════════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: .3; }
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ════════════════════════════════════════════
+   HAMBURGER
+════════════════════════════════════════════ */
+.burger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 6px;
+  border: none;
+  background: none;
+  z-index: 300;
+}
+.burger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--paper);
+  border-radius: 2px;
+  transition: transform .35s cubic-bezier(.22,1,.36,1), opacity .25s, width .25s;
+  transform-origin: center;
+}
+.burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.burger.open span:nth-child(2) { opacity: 0; width: 0; }
+.burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Mobile drawer */
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  background: rgba(11,11,12,.97);
+  backdrop-filter: blur(24px);
+  z-index: 250;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .35s;
+}
+.mobile-menu.open { opacity: 1; pointer-events: all; }
+.mobile-menu a {
+  font-family: var(--display);
+  font-size: clamp(36px, 9vw, 54px);
+  letter-spacing: .06em;
+  color: rgba(255,255,255,.75);
+  transition: color .2s;
+  padding: 8px 0;
+}
+.mobile-menu a:hover, .mobile-menu a:active { color: var(--orange); }
+.mobile-menu .mm-cta {
+  margin-top: 32px;
+  font-family: var(--body);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  background: var(--orange);
+  color: var(--paper);
+  padding: 14px 40px;
+  border-radius: 3px;
+}
+
+/* ════════════════════════════════════════════
+   TABLET  ≤ 960px
+════════════════════════════════════════════ */
+@media (max-width: 960px) {
+  /* cursor off on touch */
+  #cur, #curR { display: none; }
+  body { cursor: auto; }
+
+  #nav { padding: 18px 22px; }
+  .nav-links, .nav-cta { display: none; }
+  .burger { display: flex; }
+
+  .wrap { padding: 0 22px; }
+  .hero-content { padding: 0 22px 72px; }
+  .hero-scroll { display: none; }
+
+  .manifesto { padding: 60px 0 68px; }
+  .manifesto-ghost { display: none; }
+  .manifesto-inner { padding: 0 22px; }
+  .manifesto-body { font-size: clamp(16px, 3.5vw, 22px); }
+
+  .services { padding: 80px 0; }
+  .services-head { margin-bottom: 48px; }
+  .svc-grid { grid-template-columns: 1fr 1fr; gap: 3px; }
+
+  .cases { padding: 80px 0 0; }
+  .cases-head { margin-bottom: 44px; }
+  .cases-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(3, 260px);
+  }
+  .case-item:nth-child(1) { grid-row: span 1; }
+  .case-sector { transform: translateY(0); opacity: 1; }
+
+  .marquee-sec { padding: 52px 0; }
+  .mq-img { width: 200px; height: 145px; }
+
+  .numbers-sec { padding: 72px 0; }
+  .num-grid { grid-template-columns: 1fr 1fr; }
+  .num-item { padding: 36px 24px; }
+  .num-item:nth-child(2n+1) { border-left: none; }
+
+  .team-sec  { padding: 80px 0 0; }
+  .team-head { margin-bottom: 40px; }
+  .team-photo-wrap { max-height: 440px; }
+  .team-photo { max-height: 440px; }
+  .t-line { height: 60px; }
+  .t-tag  { min-width: 90px; padding: 9px 14px 8px; }
+  .t-name { font-size: 18px; }
+  .t-role { font-size: 8px; }
+
+  .human-sec { padding: 80px 0; }
+  .human-inner { grid-template-columns: 1fr; gap: 48px; }
+  .img-stack {
+    height: 360px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  .img-main  { width: 68%; height: 78%; }
+  .img-sec   { width: 52%; height: 54%; }
+  .img-badge { top: 18%; right: 10%; padding: 14px 16px; }
+  .badge-num { font-size: 30px; }
+
+  .quote-break { padding: 72px 0; }
+  .quote-inner  { padding: 0 22px; }
+  .quote-break::before { font-size: 200px; }
+
+  .cta-sec   { padding: 100px 0; }
+  .cta-inner { padding: 0 22px; }
+  .cta-ghost { display: none; }
+
+  footer { padding: 44px 0 24px; }
+  .footer-row { justify-content: space-between; }
+  .footer-nav { display: none; }
+}
+
+/* ════════════════════════════════════════════
+   MOBILE  ≤ 600px
+════════════════════════════════════════════ */
+@media (max-width: 600px) {
+  .hero { height: 100svh; min-height: 580px; }
+  .hero-h1 { font-size: clamp(52px, 13vw, 80px); }
+  .hero-lead { font-size: 16px; max-width: 100%; }
+  .hero-btns { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .btn-p, .btn-g { width: 100%; justify-content: center; text-align: center; padding: 16px 24px; }
+
+  .manifesto { padding: 52px 0 56px; }
+  .manifesto-kicker { font-size: 10px; }
+  .manifesto-body { font-size: 18px; line-height: 1.6; }
+  .manifesto-body br { display: none; }
+  .manifesto-coda { font-size: 14px; }
+
+  .services { padding: 64px 0; }
+  .svc-grid { grid-template-columns: 1fr; }
+  .svc-card { padding: 28px 22px; }
+
+  .cases { padding: 64px 0 0; }
+  .cases-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(5, 240px);
+  }
+  .case-item:nth-child(1) { grid-row: span 1; }
+  .case-blurb { max-height: none; opacity: 1; }
+  .case-arrow { display: none; }
+
+  .mq-img { width: 160px; height: 115px; }
+
+  .num-grid { grid-template-columns: 1fr 1fr; }
+  .num-item { padding: 28px 16px; }
+  .num-big  { font-size: 44px; }
+
+  /* img-stack: misma composición que desktop, versión compacta — forzar visible en móvil */
+  .img-stack {
+    position: relative !important;
+    height: 300px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    display: block !important;
+    opacity: 1 !important;
+    transform: none !important;
+    overflow: visible !important;
+  }
+  .img-main {
+    position: absolute !important;
+    top: 0 !important; left: 0 !important;
+    bottom: auto !important; right: auto !important;
+    width: 72% !important; height: 76% !important;
+    max-width: none !important;
+    border-radius: 10px !important;
+    border: none !important;
+    box-shadow: 0 20px 50px rgba(0,0,0,.6) !important;
+    object-fit: cover !important;
+    z-index: 2 !important;
+  }
+  .img-sec {
+    position: absolute !important;
+    bottom: 0 !important; right: 0 !important;
+    top: auto !important; left: auto !important;
+    width: 56% !important; height: 60% !important;
+    max-width: none !important;
+    border-radius: 10px !important;
+    border: 3px solid var(--black) !important;
+    box-shadow: 0 20px 50px rgba(0,0,0,.6) !important;
+    object-fit: cover !important;
+    z-index: 3 !important;
+  }
+  .img-badge { display: none; }
+  .team-names { bottom: -14px; }
+  .team-names span { font-size: 9px; padding: 6px 12px; }
+
+  .val-grid { grid-template-columns: 1fr; }
+
+  .team-photo-wrap { max-height: 360px; }
+  .team-photo { max-height: 360px; }
+  .t-member { bottom: 20px; }
+  .t-line { height: 48px; }
+  .t-tag { min-width: 76px; padding: 8px 10px 7px; }
+  .t-name { font-size: 15px; }
+  .t-role { display: none; }
+
+  .quote-break { padding: 56px 0; }
+  .quote-break::before { display: none; }
+  .quote-text { font-size: 18px; }
+
+  .cta-sec   { padding: 80px 0; }
+  .cta-h2    { font-size: clamp(44px, 12vw, 64px); }
+  .cta-sub   { font-size: 15px; }
+  .cta-mail  { font-size: 20px; }
+
+  .footer-row { flex-direction: column; align-items: flex-start; gap: 20px; }
+  .footer-btm { flex-direction: column; align-items: flex-start; gap: 6px; }
+}
+
+/* ════════════════════════════════════════════
+   SMALL MOBILE  ≤ 380px
+════════════════════════════════════════════ */
+@media (max-width: 380px) {
+  .hero-h1  { font-size: 46px; }
+  .num-grid { grid-template-columns: 1fr 1fr; }
+  .num-big  { font-size: 38px; }
+  .manifesto-body { font-size: 16px; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cur"></div>
+<div id="curR"></div>
+
+<!-- ══════════════════════════════════════════════
+     NAV
+══════════════════════════════════════════════ -->
+<nav id="nav">
+  <a href="#inicio" class="nav-logo">EUD<b>O</b>RA</a>
+  <ul class="nav-links">
+    <li><a href="#manifiesto">Manifiesto</a></li>
+    <li><a href="#servicios">Servicios</a></li>
+    <li><a href="#casos">Casos</a></li>
+    <li><a href="#nosotros">Nosotros</a></li>
+  </ul>
+  <a href="mailto:hola@eudora.cl" class="nav-cta">Trabajemos juntos</a>
+  <button class="burger" id="burger" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile menu drawer -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#manifiesto" class="mm-link">Manifiesto</a>
+  <a href="#servicios"  class="mm-link">Servicios</a>
+  <a href="#casos"      class="mm-link">Casos</a>
+  <a href="#nosotros"   class="mm-link">Nosotros</a>
+  <a href="mailto:hola@eudora.cl" class="mm-cta">Trabajemos juntos</a>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     HERO
+══════════════════════════════════════════════ -->
+<section id="inicio" class="hero">
+  <div class="hero-bg" id="heroBg"></div>
+  <div class="hero-grad"></div>
+  <div class="hero-grain"></div>
+
+  <div class="hero-content">
+    <p class="hero-eyebrow">Agencia para el Sector Creativo · Santiago, Chile</p>
+    <h1 class="hero-h1">
+      ESCALAMOS<br>
+      LO QUE <span class="ac">CREA</span><br>
+      EL MUNDO
+    </h1>
+    <p class="hero-lead">
+      Estrategia, marketing e inteligencia artificial al servicio de galerías de arte, marcas de diseño, moda y arquitectura.
+    </p>
+    <div class="hero-btns">
+      <a href="#casos" class="btn-p">Ver nuestro trabajo →</a>
+      <a href="#manifiesto" class="btn-g">Nuestro manifiesto</a>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="scroll-bar"></div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     MANIFESTO
+══════════════════════════════════════════════ -->
+<section id="manifiesto" class="manifesto">
+  <div class="manifesto-ghost">EUDORA</div>
+  <div class="manifesto-inner">
+
+    <p class="manifesto-kicker rv">— Lo que nos mueve —</p>
+
+    <p class="manifesto-body rv">
+      El mundo creativo no necesita más agencias genéricas.<br>
+      Necesita socios que entiendan que detrás de cada galería, cada marca de diseño,<br>
+      cada colección de moda… hay personas que apostaron <strong>todo</strong> por crear algo real.<br><br>
+      Somos <span class="hi">EUDORA</span>. Llevamos más de cuatro años construyendo ese puente<br>
+      con estrategia, inteligencia artificial y <strong>respeto genuino</strong> por lo que hacen nuestros clientes.
+    </p>
+
+    <p class="manifesto-coda rv">
+      <em>Porque eso merece una estrategia real.</em>
+    </p>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     SERVICES
+══════════════════════════════════════════════ -->
+<section id="servicios" class="services">
+  <div class="wrap">
+    <div class="services-head">
+      <p class="sec-label rv">Lo que hacemos</p>
+      <h2 class="sec-title rv">SERVICIOS QUE<br><span class="ac">ESCALAN MARCAS</span></h2>
+    </div>
+
+    <div class="svc-grid">
+
+      <div class="svc-card rv d1">
+        <div class="svc-num">01</div>
+        <svg class="svc-ico" viewBox="0 0 48 48" fill="none" stroke="currentColor">
+          <path d="M6 34 L16 14 L28 26 L36 16 L44 28"/><circle cx="44" cy="28" r="3" fill="currentColor" stroke="none"/>
+        </svg>
+        <h3 class="svc-name">ESTRATEGIA DE MARCA</h3>
+        <p class="svc-desc">Posicionamiento, narrativa y propuesta de valor construidos desde el interior de tu mundo creativo, no desde afuera.</p>
+        <div class="svc-tags">
+          <span class="tag">Posicionamiento</span><span class="tag">Narrativa</span><span class="tag">Identidad</span>
+        </div>
+      </div>
+
+      <div class="svc-card rv d2">
+        <div class="svc-num">02</div>
+        <svg class="svc-ico" viewBox="0 0 48 48" fill="none" stroke="currentColor">
+          <rect x="6" y="8" width="36" height="24" rx="3"/>
+          <path d="M16 40 H32 M24 32 V40"/>
+          <circle cx="24" cy="20" r="5"/>
+        </svg>
+        <h3 class="svc-name">MARKETING DIGITAL</h3>
+        <p class="svc-desc">Campañas de performance, redes sociales y contenido que entienden el lenguaje visual y sensible de tu industria.</p>
+        <div class="svc-tags">
+          <span class="tag">Social Media</span><span class="tag">Paid Media</span><span class="tag">Contenido</span>
+        </div>
+      </div>
+
+      <div class="svc-card rv d3">
+        <div class="svc-num">03</div>
+        <svg class="svc-ico" viewBox="0 0 48 48" fill="none" stroke="currentColor">
+          <polygon points="24,4 44,16 44,32 24,44 4,32 4,16"/>
+          <circle cx="24" cy="24" r="8"/>
+          <path d="M24 4 V16 M24 32 V44 M4 16 L14 20 M34 28 L44 32 M4 32 L14 28 M34 20 L44 16"/>
+        </svg>
+        <h3 class="svc-name">IDENTIDAD VISUAL</h3>
+        <p class="svc-desc">Diseño gráfico, fotografía editorial, web y dirección de arte que reflejan la calidad y singularidad de lo que creas.</p>
+        <div class="svc-tags">
+          <span class="tag">Diseño</span><span class="tag">Web</span><span class="tag">Fotografía</span>
+        </div>
+      </div>
+
+      <div class="svc-card rv d4">
+        <div class="svc-num">04</div>
+        <svg class="svc-ico" viewBox="0 0 48 48" fill="none" stroke="currentColor">
+          <circle cx="24" cy="24" r="16"/>
+          <path d="M24 8 L24 24 L34 14"/>
+          <path d="M16 32 C16 28, 20 26, 24 26 C28 26, 32 28, 32 32"/>
+          <circle cx="24" cy="24" r="2.5" fill="currentColor" stroke="none"/>
+        </svg>
+        <h3 class="svc-name">AUTOMATIZACIÓN IA</h3>
+        <p class="svc-desc">Flujos inteligentes, contenido generado con IA y herramientas que multiplican tu alcance sin perder autenticidad.</p>
+        <div class="svc-tags">
+          <span class="tag">AI Workflows</span><span class="tag">Automatización</span><span class="tag">Escala</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     CASES
+══════════════════════════════════════════════ -->
+<section id="casos" class="cases">
+  <div class="wrap">
+    <div class="cases-head">
+      <p class="sec-label rv">Trabajo real</p>
+      <h2 class="sec-title rv">MARCAS QUE<br><span class="ac">ESCALAMOS</span></h2>
+    </div>
+  </div>
+
+  <div class="cases-grid rv">
+
+    <div class="case-item">
+      <img src="tarquinia/Imagen%20de%20WhatsApp%202025-09-24%20a%20las%2017.46.55_70c5c658.jpg"
+           class="case-img" alt="Galería Tarquinia">
+      <div class="case-ov">
+        <div class="case-sector">Arte Contemporáneo · Galería</div>
+        <h3 class="case-name">GALERÍA TARQUINIA</h3>
+        <p class="case-blurb">Posicionamiento digital, estrategia de contenidos y lanzamiento de exposiciones para una de las galerías de arte más activas de Chile.</p>
+      </div>
+      <div class="case-arrow">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M1 12 L12 1 M3.5 1 H12 V9.5"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="case-item">
+      <img src="muerde/Muerde-10.jpg"
+           class="case-img" alt="Muerde">
+      <div class="case-ov">
+        <div class="case-sector">Marca · Diseño · Lifestyle</div>
+        <h3 class="case-name">MUERDE</h3>
+        <p class="case-blurb">Construcción de identidad y comunidad digital para una marca de diseño con alma propia.</p>
+      </div>
+      <div class="case-arrow">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M1 12 L12 1 M3.5 1 H12 V9.5"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="case-item">
+      <img src="nac/Captura%20de%20pantalla%202026-04-24%20135916.png"
+           class="case-img" alt="Galería NAC">
+      <div class="case-ov">
+        <div class="case-sector">Arte · Galería · Talleres</div>
+        <h3 class="case-name">GALERÍA NAC</h3>
+        <p class="case-blurb">Estrategia integral para el crecimiento digital de un espacio cultural con programación viva.</p>
+      </div>
+      <div class="case-arrow">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M1 12 L12 1 M3.5 1 H12 V9.5"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="case-item">
+      <img src="fundacion/CARB1.jpg"
+           class="case-img" alt="Fundación Tarquinia">
+      <div class="case-ov">
+        <div class="case-sector">Fundación Cultural · Arte</div>
+        <h3 class="case-name">FUNDACIÓN TARQUINIA</h3>
+        <p class="case-blurb">Comunicación institucional y marketing de impacto para una fundación dedicada al arte y la cultura.</p>
+      </div>
+      <div class="case-arrow">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M1 12 L12 1 M3.5 1 H12 V9.5"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="case-item">
+      <img src="mutar/Captura%20de%20pantalla%202026-04-24%20143403.png"
+           class="case-img" alt="Museo Mutar">
+      <div class="case-ov">
+        <div class="case-sector">Museo · Experiencia Inmersiva · Cultura</div>
+        <h3 class="case-name">MUSEO MUTAR</h3>
+        <p class="case-blurb">Lanzamiento y presencia digital para un museo de experiencias inmersivas desde cero.</p>
+      </div>
+      <div class="case-arrow">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M1 12 L12 1 M3.5 1 H12 V9.5"/>
+        </svg>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     MARQUEE GALLERY
+══════════════════════════════════════════════ -->
+<section class="marquee-sec">
+  <div class="marquee-label">
+    <p class="sec-label rv">Portfolio visual</p>
+  </div>
+  <div class="mq-wrap">
+    <div class="mq-track">
+      <img src="tarquinia/PORTADA%20ESCULTURA%20BRONCE%20MATTTA.png" class="mq-img" alt="">
+      <img src="tarquinia/Tarquinia%20-%20Matta-1%20-%20copia%20-%20copia.jpg" class="mq-img" alt="">
+      <img src="tarquinia/Imagen%20de%20WhatsApp%202025-09-24%20a%20las%2017.46.55_70c5c658.jpg" class="mq-img" alt="">
+      <img src="muerde/Muerde-3%20(3).jpg" class="mq-img" alt="">
+      <img src="muerde/martillo.png" class="mq-img" alt="">
+      <img src="muerde/Rompiente%20ocaso%203_v2.png" class="mq-img" alt="">
+      <img src="nac/Captura%20de%20pantalla%202026-04-24%20140000.png" class="mq-img" alt="">
+      <img src="nac/WhatsApp%20Image%202025-12-17%20at%201.30.40%20PM%20(2).jpeg" class="mq-img" alt="">
+      <img src="fundacion/CARB2.jpg" class="mq-img" alt="">
+      <img src="fundacion/DO76.jpg" class="mq-img" alt="">
+      <img src="fundacion/20240228_200032%20(1).jpg" class="mq-img" alt="">
+      <img src="fundacion/20240307_143301.jpg" class="mq-img" alt="">
+      <img src="mutar/Captura%20de%20pantalla%202026-04-24%20143439.png" class="mq-img" alt="">
+      <img src="mutar/Captura%20de%20pantalla%202026-04-24%20143514.png" class="mq-img" alt="">
+      <img src="mutar/Captura%20de%20pantalla%202026-04-24%20143537.png" class="mq-img" alt="">
+      <!-- duplicate for seamless loop -->
+      <img src="tarquinia/PORTADA%20ESCULTURA%20BRONCE%20MATTTA.png" class="mq-img" alt="">
+      <img src="tarquinia/Tarquinia%20-%20Matta-1%20-%20copia%20-%20copia.jpg" class="mq-img" alt="">
+      <img src="tarquinia/Imagen%20de%20WhatsApp%202025-09-24%20a%20las%2017.46.55_70c5c658.jpg" class="mq-img" alt="">
+      <img src="muerde/Muerde-3%20(3).jpg" class="mq-img" alt="">
+      <img src="muerde/martillo.png" class="mq-img" alt="">
+      <img src="muerde/Rompiente%20ocaso%203_v2.png" class="mq-img" alt="">
+      <img src="nac/Captura%20de%20pantalla%202026-04-24%20140000.png" class="mq-img" alt="">
+      <img src="nac/WhatsApp%20Image%202025-12-17%20at%201.30.40%20PM%20(2).jpeg" class="mq-img" alt="">
+      <img src="fundacion/CARB2.jpg" class="mq-img" alt="">
+      <img src="fundacion/DO76.jpg" class="mq-img" alt="">
+      <img src="fundacion/20240228_200032%20(1).jpg" class="mq-img" alt="">
+      <img src="fundacion/20240307_143301.jpg" class="mq-img" alt="">
+      <img src="mutar/Captura%20de%20pantalla%202026-04-24%20143439.png" class="mq-img" alt="">
+      <img src="mutar/Captura%20de%20pantalla%202026-04-24%20143514.png" class="mq-img" alt="">
+      <img src="mutar/Captura%20de%20pantalla%202026-04-24%20143537.png" class="mq-img" alt="">
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     NUMBERS
+══════════════════════════════════════════════ -->
+<section class="numbers-sec">
+  <div class="wrap">
+    <div class="num-grid">
+      <div class="num-item rv">
+        <div class="num-big"><span class="ctr" data-t="4">0</span>+</div>
+        <div class="num-label">Años escalando<br>marcas creativas</div>
+      </div>
+      <div class="num-item rv d1">
+        <div class="num-big"><span class="ctr" data-t="20">0</span>+</div>
+        <div class="num-label">Proyectos en el<br>sector creativo</div>
+      </div>
+      <div class="num-item rv d2">
+        <div class="num-big"><span class="ctr" data-t="5">0</span></div>
+        <div class="num-label">Sectores creativos<br>especializados</div>
+      </div>
+      <div class="num-item rv d3">
+        <div class="num-big">IA+</div>
+        <div class="num-label">Potenciado por<br>inteligencia artificial</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     TEAM
+══════════════════════════════════════════════ -->
+<section id="equipo" class="team-sec">
+  <div class="wrap">
+    <div class="team-head">
+      <p class="sec-label rv">El equipo</p>
+      <h2 class="sec-title rv">LAS PERSONAS<br><span class="ac">DETRÁS</span></h2>
+    </div>
+  </div>
+
+  <div class="team-photo-wrap rv">
+    <img
+      src="equipo-eudora.jpg.jpeg"
+      alt="Equipo Eudora — Javier, Santiago y Alberto"
+      class="team-photo">
+    <div class="team-overlay"></div>
+    <div class="team-labels">
+
+      <div class="t-member" style="left:22%">
+        <div class="t-line"></div>
+        <div class="t-tag">
+          <span class="t-name">JAVIER</span>
+          <span class="t-role">Diseño & Creatividad</span>
+        </div>
+      </div>
+
+      <div class="t-member" style="left:50%">
+        <div class="t-line"></div>
+        <div class="t-tag">
+          <span class="t-name">SANTIAGO</span>
+          <span class="t-role">Fundador & Director</span>
+        </div>
+      </div>
+
+      <div class="t-member" style="left:78%">
+        <div class="t-line"></div>
+        <div class="t-tag">
+          <span class="t-name">ALBERTO</span>
+          <span class="t-role">Estrategia & Growth</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     QUOTE BREAK
+══════════════════════════════════════════════ -->
+<section class="quote-break">
+  <div class="quote-inner">
+    <p class="quote-text rv">
+      "Usamos la inteligencia artificial como herramienta,<br>
+      pero la estrategia siempre parte de <span>entender a las personas</span>.<br>
+      Eso es lo que no se puede automatizar."
+    </p>
+    <p class="quote-author rv">— <b>Eudora</b> · Manifiesto de agencia</p>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     HUMAN / WHY US
+══════════════════════════════════════════════ -->
+<section id="nosotros" class="human-sec">
+  <div class="wrap">
+    <div class="human-inner">
+
+      <div class="img-stack rvL">
+        <img
+          src="Imagen%20de%20WhatsApp%202025-09-24%20a%20las%2019.30.31_20a25277%20-%20copia%20-%20copia%20-%20copia.jpg"
+          alt="Equipo instalando obra en galería"
+          class="img-main">
+        <img
+          src="Imagen%20de%20WhatsApp%202025-11-04%20a%20las%2012.47.31_1f657c50.jpg"
+          alt="Proceso creativo — grabado en cobre"
+          class="img-sec">
+        <div class="img-badge">
+          <div class="badge-num">4+</div>
+          <div class="badge-txt">Años de<br>experiencia</div>
+        </div>
+      </div>
+
+      <div class="human-copy rvR">
+        <p class="sec-label">Por qué Eudora</p>
+        <h2 class="human-title">
+          PERSONAS QUE<br>
+          ENTIENDEN A<br>
+          <span class="ac">PERSONAS QUE CREAN</span>
+        </h2>
+        <p class="human-body">
+          Somos Javier, Santiago y Alberto. No somos una agencia genérica con un departamento "de artes" — nacimos en el sector creativo y llevamos años trabajando codo a codo con galeristas, artistas, diseñadores y arquitectos.
+          <br><br>
+          Entendemos que el valor de lo que hacen nuestros clientes no siempre se mide en clics. Por eso combinamos rigor estratégico con respeto genuino por la sensibilidad de cada marca.
+        </p>
+        <div class="val-grid">
+          <div class="val-item">
+            <div class="val-title">Especializados</div>
+            <div class="val-desc">Solo trabajamos con marcas del sector creativo. Es nuestra ventaja y nuestro compromiso.</div>
+          </div>
+          <div class="val-item">
+            <div class="val-title">IA con alma</div>
+            <div class="val-desc">Usamos las mejores herramientas de IA para escalar, pero la estrategia siempre es humana.</div>
+          </div>
+          <div class="val-item">
+            <div class="val-title">Resultados reales</div>
+            <div class="val-desc">Más de 4 años y 20+ proyectos lo respaldan. Trabajamos para que tu marca crezca.</div>
+          </div>
+          <div class="val-item">
+            <div class="val-title">Largo plazo</div>
+            <div class="val-desc">No buscamos clientes. Buscamos marcas con las que crecer juntos en el tiempo.</div>
+          </div>
+        </div>
+        <a href="#contacto" class="btn-p">Conversemos →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     CTA
+══════════════════════════════════════════════ -->
+<section id="contacto" class="cta-sec">
+  <div class="cta-ghost">EUDORA</div>
+  <div class="cta-inner">
+    <p class="cta-eyebrow rv">¿Tienes una marca creativa?</p>
+    <h2 class="cta-h2 rv">
+      TRABAJEMOS<br>
+      <span class="ac">JUNTOS</span>
+    </h2>
+    <p class="cta-sub rv">
+      Cuéntanos sobre tu proyecto. Si tu marca tiene algo genuino que decir al mundo, nosotros te ayudamos a que lo escuche.
+    </p>
+    <div class="rv">
+      <a href="mailto:hola@eudora.cl" class="btn-p" style="font-size:13px;padding:18px 52px;display:inline-flex;">
+        Escribirnos →
+      </a>
+    </div>
+    <a href="mailto:hola@eudora.cl" class="cta-mail rv">hola@eudora.cl</a>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════════ -->
+<footer>
+  <div class="wrap">
+    <div class="footer-row">
+      <div class="footer-logo">EUD<b>O</b>RA</div>
+      <ul class="footer-nav">
+        <li><a href="#manifiesto">Manifiesto</a></li>
+        <li><a href="#servicios">Servicios</a></li>
+        <li><a href="#casos">Casos</a></li>
+        <li><a href="mailto:hola@eudora.cl">Contacto</a></li>
+      </ul>
+      <div class="footer-social">
+        <a href="#" class="soc" title="Instagram">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="2" y="2" width="20" height="20" rx="5"/>
+            <circle cx="12" cy="12" r="4.5"/>
+            <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+          </svg>
+        </a>
+        <a href="#" class="soc" title="LinkedIn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="2" y="2" width="20" height="20" rx="4"/>
+            <path d="M7 10V17M7 7V7.5M12 17V13c0-1.66 1.34-3 3-3s3 1.34 3 3v4M12 10V17"/>
+          </svg>
+        </a>
+        <a href="https://www.eudora.cl" class="soc" title="Web">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M3 12H21M12 3C10 7 10 17 12 21M12 3C14 7 14 17 12 21"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-btm">
+      <p class="footer-copy">© 2025 Eudora · Santiago, Chile · eudora.cl</p>
+      <p class="footer-tagline">Escalamos lo que <span>crea</span> el mundo.</p>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ══════════════════════════════════════════════
+     SCRIPTS
+══════════════════════════════════════════════ -->
+<script>
+/* ─── CURSOR (desktop only) ─────────────────── */
+const isTouch = window.matchMedia('(hover: none)').matches;
+const cur  = document.getElementById('cur');
+const curR = document.getElementById('curR');
+if (!isTouch) {
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cur.style.left = mx + 'px';
+    cur.style.top  = my + 'px';
+  });
+  (function tick() {
+    rx += (mx - rx) * .12;
+    ry += (my - ry) * .12;
+    curR.style.left = rx + 'px';
+    curR.style.top  = ry + 'px';
+    requestAnimationFrame(tick);
+  })();
+  document.querySelectorAll('a, button, .case-item, .svc-card, .val-item').forEach(el => {
+    el.addEventListener('mouseenter', () => cur.classList.add('big'));
+    el.addEventListener('mouseleave', () => cur.classList.remove('big'));
+  });
+} else {
+  cur.style.display  = 'none';
+  curR.style.display = 'none';
+  document.body.style.cursor = 'auto';
+}
+
+/* ─── HAMBURGER MENU ────────────────────────── */
+const burger     = document.getElementById('burger');
+const mobileMenu = document.getElementById('mobileMenu');
+function toggleMenu(open) {
+  burger.classList.toggle('open', open);
+  mobileMenu.classList.toggle('open', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+}
+burger.addEventListener('click', () => toggleMenu(!mobileMenu.classList.contains('open')));
+document.querySelectorAll('.mm-link, .mm-cta').forEach(a => {
+  a.addEventListener('click', () => toggleMenu(false));
+});
+
+/* ─── NAV SOLID ─────────────────────────────── */
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('solid', window.scrollY > 50);
+}, { passive: true });
+
+/* ─── HERO BG ZOOM ON LOAD ──────────────────── */
+window.addEventListener('load', () => {
+  const bg = document.getElementById('heroBg');
+  if (bg) bg.classList.add('z');
+});
+
+/* ─── HERO PARALLAX ─────────────────────────── */
+const heroBg = document.getElementById('heroBg');
+window.addEventListener('scroll', () => {
+  if (window.scrollY < window.innerHeight && heroBg) {
+    heroBg.style.transform = `scale(1) translateY(${window.scrollY * 0.28}px)`;
+  }
+}, { passive: true });
+
+/* ─── REVEAL ON SCROLL ──────────────────────── */
+const revEls = document.querySelectorAll('.rv, .rvL, .rvR');
+const revObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('on'); revObs.unobserve(e.target); }
+  });
+}, { threshold: 0.12 });
+revEls.forEach(el => revObs.observe(el));
+
+/* ─── COUNTER ANIMATION ─────────────────────── */
+const ctrs = document.querySelectorAll('.ctr');
+const ctrObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const el = e.target;
+    const target = parseInt(el.dataset.t, 10);
+    let n = 0;
+    const step = Math.max(1, target / 45);
+    const timer = setInterval(() => {
+      n += step;
+      if (n >= target) { el.textContent = target; clearInterval(timer); }
+      else el.textContent = Math.floor(n);
+    }, 38);
+    ctrObs.unobserve(el);
+  });
+}, { threshold: 0.5 });
+ctrs.forEach(c => ctrObs.observe(c));
+</script>
+
+</body>
+</html>
